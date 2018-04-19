@@ -37,6 +37,18 @@ fts.to_sql_fast(df, 'DFName', engine, if_exists = 'append', series = False)
 
 ## Usage
 
+### Main function
+
+```python
+fts.to_sql_fast(df, name, engine, if_exists = 'append', series = False)
+```
+
+* ```df```: pandas DataFrame to upload
+* __name__: String of desired name for the table in SQL server
+* __engine__: A SQL alchemy engine
+* __if_exists__: Option for what to do if the specified name already exists in the dataframe. If the dataframe does not exist a new one will be created. By default this option is set to 'append'
+  * 
+
 
 
 
