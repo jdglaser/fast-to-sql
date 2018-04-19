@@ -44,10 +44,23 @@ fts.to_sql_fast(df, name, engine, if_exists = 'append', series = False)
 ```
 
 * ```df```: pandas DataFrame to upload
-* __name__: String of desired name for the table in SQL server
-* __engine__: A SQL alchemy engine
-* __if_exists__: Option for what to do if the specified name already exists in the dataframe. If the dataframe does not exist a new one will be created. By default this option is set to 'append'
-  * 
+* ```name```: String of desired name for the table in SQL server
+* ```engine```: A SQL alchemy engine
+* ```if_exists```: Option for what to do if the specified name already exists in the dataframe. If the dataframe does not exist a new one will be created. By default this option is set to 'append'
+  * __'append'__: Appends the dataframe to the table if it already exists in SQL server.
+  * __'fail'__: Purposely raises a FailError if the table already exists in SQL server.
+  * __'replace'__: Drops the old table with the specified name, and creates a new one. Be careful with this option, it will completely delete a table with the specified name in SQL server.
+* ```series```: By default this is set to False. Set to True if the DataFrame is a series (only has one column).
+
+## Caveats
+
+* This has only been tested with Microsoft SQL Server 2008. This may not work for other SQL databases.
+* The larger the database, the smaller speed imrpovements you will most likely see. This means that a 100 column, 500,000 row table, may still take a while to upload. This is because multi-row insert can only do a max of 1000 rows at a time.
+* Some of the try and except statements in the script that check for existsing tables, use just a general except statement rather than specifying an error. While this is generally bad practice, the errors returned were specific to Pyodbc, and I wanted to keep the funciton open to other Python + SQL methods as well. If anyone is willing to test/improve this function for uses outside of mssql+pyodbc, please do!
+
+## Credits
+
+* An excellent article [here](https://iabdb.me/2016/07/13/a-better-way-load-data-into-microsoft-sql-server-from-pandas/) was what inspired me to create this function.
 
 
 
