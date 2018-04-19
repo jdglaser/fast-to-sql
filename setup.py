@@ -19,7 +19,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     
 setup(
     name='fast_to_sql',
-    version='0.1.0',
+    version='1.0.0',
     description='An improved way of uploading pandas DataFrames to MS SQL server',
     long_description=long_description,
     url='https://github.com/jdglaser/fast_to_SQL',
