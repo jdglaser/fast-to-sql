@@ -8,7 +8,7 @@ The funciton also automatically preserves datatypes for: integer, float, string,
 
 ## Installation
 
-This module is not on pip. To install just download the fast_to_sql script to the same directory as your project, and import as seen above.
+This module is not on pip. To install just download the fast_to_sql script to the same directory as your project, and import as seen under the Example.
 
 ## Requirements
 
