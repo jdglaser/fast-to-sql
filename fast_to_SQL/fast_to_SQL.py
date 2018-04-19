@@ -35,7 +35,6 @@ def to_sql_fast(df,name,engine,if_exists='append',series=False):
     # Create list of columns and their datatypes
     cols = [c for c in df.columns]
     dtypes = [str(i) for i in df.dtypes]
-    print(dtypes)
     sql_dtypes = []
     for i in range(len(dtypes)):
         if dtypes[i] == 'int64':
@@ -61,7 +60,6 @@ def to_sql_fast(df,name,engine,if_exists='append',series=False):
             sql_dtypes.append("varchar(255)")
     col_string_create = "(" + ', '.join([cols[i] + " " + sql_dtypes[i] for i in range(len(cols))]) + ")"
     col_string_insert = "(" + ', '.join(cols) + ")"
-    print(df)
     # Define records for inserting
     records = [str(tuple(x)) for x in df.values]
     
