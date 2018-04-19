@@ -8,17 +8,19 @@ The funciton also automatically preserves datatypes for: integer, float, string,
 
 ## Installation
 
-This module is not on pip. To install just download the fast_to_sql script to the same directory as your project, and import as seen under the Example.
+```python
+pip install fast_to_SQL
+```
 
 ## Requirements
 
 * Written for Python 3.6+
-* Requires pandas, sqlalchemy, datetime.datetime
+* Requires pandas, sqlalchemy, datetime
 
 ## Example
 
 ```python
-import fast_to_SQL as fts
+from fast_to_SQL import fast_to_SQL as fts
 
 # Create a SQL Alchemy Engine to desired server/database
 sqluser = "DOMAIN\USER"
