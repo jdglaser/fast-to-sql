@@ -8,17 +8,19 @@ The funciton also automatically preserves datatypes for: integer, float, string,
 
 ## Installation
 
-This module is not on pip. To install just download the fast_to_sql script to the same directory as your project, and import as seen under the Example.
+```python
+pip install fast_to_SQL
+```
 
 ## Requirements
 
 * Written for Python 3.6+
-* Requires pandas, sqlalchemy, datetime.datetime
+* Requires pandas, sqlalchemy, datetime
 
 ## Example
 
 ```python
-import fast_to_SQL as fts
+from fast_to_SQL import fast_to_SQL as fts
 
 # Create a SQL Alchemy Engine to desired server/database
 sqluser = "DOMAIN\USER"
@@ -54,7 +56,7 @@ fts.to_sql_fast(df, name, engine, if_exists = 'append', series = False)
 
 ## Caveats
 
-* This has only been tested with Microsoft SQL Server 2008. This may not work for other SQL databases.
+* This has only been tested with Microsoft SQL Server 2016. This may not work for other SQL databases.
 * The larger the database, the smaller speed imrpovements you will most likely see. This means that a 100 column, 500,000 row table, may still take a while to upload. This is because multi-row insert can only do a max of 1000 rows at a time.
 * Some of the try and except statements in the script that check for existsing tables, use just a general except statement rather than specifying an error. While this is generally bad practice, the errors returned were specific to Pyodbc, and I wanted to keep the funciton open to other Python + SQL methods as well. If anyone is willing to test/improve this function for uses outside of mssql+pyodbc, please do!
 
