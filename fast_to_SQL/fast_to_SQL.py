@@ -9,6 +9,8 @@ class WrongParam(Exception):
     pass
 class InvalidEngine(Exception):
     pass
+class DuplicateColumns(Exception):
+    pass
 
 # Define funciton for chunk splitting
 def chunk_split(seq, size):
@@ -22,6 +24,13 @@ def to_sql_fast(df,name,engine,if_exists='append',series=False):
     except:
         raise InvalidEngine("Cannot connect to sqlalchemy engine.")
     
+    # Check for duplicate column names
+    lower_cols = [c.lower() for c in df.columns]
+    check = list(set([x for x in lower_cols if lower_cols.count(x) > 1]))
+
+    if check:
+        raise DuplicateColumns("There are duplicate column names. Columns named twice are: {}. SQL must have unique names (case insensitive)".format(check))
+
     if series == True:
         df = df.to_frame()
     
@@ -30,6 +39,7 @@ def to_sql_fast(df,name,engine,if_exists='append',series=False):
     # Get rid of invalid character in title
     for i in range(len(cols)):
         cols[i] = cols[i].replace(" ","_").replace("(","").replace(")","")
+        cols[i] = "[" + cols[i] + "]"
     df.columns = cols
     
     # Create list of columns and their datatypes
@@ -58,6 +68,7 @@ def to_sql_fast(df,name,engine,if_exists='append',series=False):
         else:
             df[cols[i]] = df[cols[i]].fillna("NULL")
             sql_dtypes.append("varchar(255)")
+    
     col_string_create = "(" + ', '.join([cols[i] + " " + sql_dtypes[i] for i in range(len(cols))]) + ")"
     col_string_insert = "(" + ', '.join(cols) + ")"
     # Define records for inserting
@@ -75,6 +86,7 @@ def to_sql_fast(df,name,engine,if_exists='append',series=False):
         for batch in chunk_split(records, 1000):
             rows = ','.join(batch)
             insert_batch = insert + "{}".format(rows)
+            insert_batch = insert_batch.replace("'NULL'","NULL")
             engine.execute(insert_batch)
     
     # Check if table exists
@@ -104,4 +116,4 @@ def to_sql_fast(df,name,engine,if_exists='append',series=False):
     else:
         batch_run()
 
-
+    
