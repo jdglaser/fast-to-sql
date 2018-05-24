@@ -2,9 +2,9 @@
 
 ## Introduction
 
-fast_to_SQL is an improved way to upload pandas dataframes to MS SQL server. The method borrows an idea from [here](https://iabdb.me/2016/07/13/a-better-way-load-data-into-microsoft-sql-server-from-pandas/), and turns it into a usable function. This function takes advantage of MS SQL server's multi-row insert ability. This can lead to MUCH faster speeds for uploading dataframes to SQL server (uploading a 10,000 row 5 column dataframe with pd.to_sql() took 517.97s, while uploading the same dataframe with fast_to_SQL took took about only 5.45s!). 
+fast_to_SQL is an improved way to upload pandas dataframes to MS SQL server. The method borrows an idea from [here](https://iabdb.me/2016/07/13/a-better-way-load-data-into-microsoft-sql-server-from-pandas/), and turns it into a usable function. This function takes advantage of MS SQL server's multi-row insert ability. This can lead to MUCH faster speeds for uploading dataframes to SQL server (uploading a 10,000 row 5 column dataframe with pd.to_sql() took 517.97s, while uploading the same dataframe with fast_to_SQL took took only 5.45s!). 
 
-The funciton also automatically preserves datatypes for: integer, float, string, boolean, and datetime64[ns] and converts them to SQL datatypes: int, float, varchar(255), bit, and datetime.
+The function also automatically preserves datatypes for: integer, float, string, boolean, and datetime64[ns] and converts them to SQL datatypes: int, float, varchar(255), bit, and datetime.
 
 ## Installation
 
@@ -58,7 +58,7 @@ fts.to_sql_fast(df, name, engine, if_exists = 'append', series = False)
 
 * This has only been tested with Microsoft SQL Server 2016. This may not work for other SQL databases.
 * The larger the database, the smaller speed imrpovements you will most likely see. This means that a 100 column, 500,000 row table, may still take a while to upload. This is because multi-row insert can only do a max of 1000 rows at a time.
-* Some of the try and except statements in the script that check for existsing tables, use just a general except statement rather than specifying an error. While this is generally bad practice, the errors returned were specific to Pyodbc, and I wanted to keep the funciton open to other Python + SQL methods as well. If anyone is willing to test/improve this function for uses outside of mssql+pyodbc, please do!
+* Some of the try and except statements in the script that check for existing tables use just a general except statement rather than specifying an error. While this is generally bad practice, the errors returned were specific to Pyodbc, and I wanted to keep the funciton open to other Python + SQL methods as well. If anyone is willing to test/improve this function for uses outside of mssql+pyodbc, please do!
 
 ## Credits
 
