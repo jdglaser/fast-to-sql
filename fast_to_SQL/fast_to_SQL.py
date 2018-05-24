@@ -1,5 +1,5 @@
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, exc
 from datetime import datetime
 
 # Define Errors
@@ -18,6 +18,8 @@ def chunk_split(seq, size):
 
 # Main function      
 def to_sql_fast(df,name,engine,if_exists='append',series=False):
+    # Copy DF to avoid changing instance elsewhere
+    df = df.copy()
     # Check for valid engine
     try:
         engine.connect()
@@ -94,8 +96,11 @@ def to_sql_fast(df,name,engine,if_exists='append',series=False):
         engine.execute(("CREATE TABLE {}"
                         " {};").format(name, col_string_create))
         exists = False
-    except:
-        exists = True
+    except exc.SQLAlchemyError as e:
+        if "there is already an object named" in str(e).lower():
+            exists = True
+        else:
+            raise e
    
     # Decide what to do based on whether the table exists
     # If table does exist
