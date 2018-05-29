@@ -19,7 +19,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     
 setup(
     name='fast_to_SQL',
-    version='1.0.1',
+    version='1.0.8',
     description='An improved way of uploading pandas DataFrames to MS SQL server',
     long_description=long_description,
     url='https://github.com/jdglaser/fast_to_SQL',
@@ -27,7 +27,7 @@ setup(
     author_email='jarred.glaser@gmail.com',
     license='MIT License',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Programming Language :: Python :: 3.6',
         'License :: MIT License'

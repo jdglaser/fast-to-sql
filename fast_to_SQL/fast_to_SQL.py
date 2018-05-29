@@ -20,6 +20,9 @@ def chunk_split(seq, size):
 def to_sql_fast(df,name,engine,if_exists='append',series=False):
     # Copy DF to avoid changing instance elsewhere
     df = df.copy()
+    # Replace all commas in dataframe to avoid SQl error
+    df = df.replace(to_replace="'",value="")
+    
     # Check for valid engine
     try:
         engine.connect()
