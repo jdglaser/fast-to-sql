@@ -21,8 +21,10 @@ def to_sql_fast(df,name,engine,if_exists='append',series=False):
     # Copy DF to avoid changing instance elsewhere
     df = df.copy()
     # Replace all commas in dataframe to avoid SQl error
-    df = df.replace(to_replace="'",value="")
-    
+    object_cols = list(df.select_dtypes(include='object').columns)
+    df[object_cols] = df[object_cols].apply(lambda x: x.str.replace('"',""))
+    df[object_cols] = df[object_cols].apply(lambda x: x.str.replace("'",""))
+
     # Check for valid engine
     try:
         engine.connect()
