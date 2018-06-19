@@ -2,6 +2,9 @@ import pandas as pd
 from sqlalchemy import create_engine, exc
 from datetime import datetime
 
+#TODO: Automatically set int lengths
+#TODO: Automatically adjust string length
+
 # Define Errors
 class FailError(Exception):
     pass
@@ -17,14 +20,15 @@ def chunk_split(seq, size):
     return (seq[pos:pos + size] for pos in range(0,len(seq),size))
 
 # Main function      
-def to_sql_fast(df,name,engine,if_exists='append',series=False):
+def to_sql_fast(df,name,engine,if_exists='append',series=False,custom=None):
+    if custom is None:
+        custom = {}
     # Copy DF to avoid changing instance elsewhere
     df = df.copy()
     # Replace all commas in dataframe to avoid SQl error
     object_cols = list(df.select_dtypes(include='object').columns)
-    df[object_cols] = df[object_cols].apply(lambda x: x.str.replace('"',""))
-    df[object_cols] = df[object_cols].apply(lambda x: x.str.replace("'",""))
-
+    df[object_cols] = df[object_cols].apply(lambda x: x.astype(str).str.replace('"',""))
+    df[object_cols] = df[object_cols].apply(lambda x: x.astype(str).str.replace("'",""))
     # Check for valid engine
     try:
         engine.connect()
@@ -47,37 +51,53 @@ def to_sql_fast(df,name,engine,if_exists='append',series=False):
     for i in range(len(cols)):
         cols[i] = cols[i].replace(" ","_").replace("(","").replace(")","")
         cols[i] = "[" + cols[i] + "]"
+
+    custom_new = {}
+    for k,v in custom.items():
+        new_key = k.replace(" ","_").replace("(","").replace(")","")
+        new_key = "[" + new_key + "]"
+        custom_new[new_key] = custom[k]
+    custom = custom_new
     df.columns = cols
-    
+
     # Create list of columns and their datatypes
-    cols = [c for c in df.columns]
-    dtypes = [str(i) for i in df.dtypes]
+    dtypes = {i: str(df[i].dtype) for i in df.columns}
+    cols = []
     sql_dtypes = []
-    for i in range(len(dtypes)):
-        if dtypes[i] == 'int64':
-            df[cols[i]] = df[cols[i]].fillna(0)
+    for k,v in dtypes.items():
+        key = k
+        if key in custom.keys():
+            value = custom[key]
+            cols.append(key)
+            sql_dtypes.append(value)
+            continue
+        else:
+            value = str(v)
+        if value == 'int64':
+            cols.append(key)
             sql_dtypes.append("int")
-        elif dtypes[i] == 'float64':
-            df[cols[i]] = df[cols[i]].fillna(0)
+        elif value == 'float64':
+            cols.append(key)
             sql_dtypes.append("float")
-        elif dtypes[i] == 'object':
-            df[cols[i]] = df[cols[i]].fillna("NULL")
+        elif value == 'object':
+            cols.append(key)
             sql_dtypes.append("varchar(255)")
-        elif dtypes[i] == 'datetime64[ns]':
-            df[cols[i]] = df[cols[i]].astype(str)
-            df[cols[i]] = df[cols[i]].fillna("NULL")
+        elif value == 'datetime64[ns]':
+            df[key] = df[key].astype(str)
+            cols.append(key)
             sql_dtypes.append("datetime")
-        elif dtypes[i] == 'bool':
-            df.loc[df[cols[i]] == True, [cols[i]]] = 1
-            df.loc[df[cols[i]] == False, [cols[i]]] = 0
-            df[cols[i]] = df[cols[i]].fillna("NULL")
+        elif value == 'bool':
+            df.loc[df[key] == True, [key]] = 1
+            df.loc[df[key] == False, [key]] = 0
+            cols.append(key)
             sql_dtypes.append("bit")
         else:
-            df[cols[i]] = df[cols[i]].fillna("NULL")
             sql_dtypes.append("varchar(255)")
-    
+
+    df = df.fillna("NULL")
     col_string_create = "(" + ', '.join([cols[i] + " " + sql_dtypes[i] for i in range(len(cols))]) + ")"
     col_string_insert = "(" + ', '.join(cols) + ")"
+    
     # Define records for inserting
     records = [str(tuple(x)) for x in df.values]
     
