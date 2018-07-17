@@ -2,9 +2,6 @@ import pandas as pd
 from sqlalchemy import create_engine, exc
 from datetime import datetime
 
-#TODO: Automatically set int lengths
-#TODO: Automatically adjust string length
-
 # Define Errors
 class FailError(Exception):
     pass
@@ -20,7 +17,7 @@ def chunk_split(seq, size):
     return (seq[pos:pos + size] for pos in range(0,len(seq),size))
 
 # Main function      
-def to_sql_fast(df,name,engine,if_exists='append',series=False,custom=None):
+def to_sql_fast(df,name,engine,if_exists='append',series=False,custom=None,temp=False):
     if custom is None:
         custom = {}
     # Copy DF to avoid changing instance elsewhere
@@ -106,7 +103,10 @@ def to_sql_fast(df,name,engine,if_exists='append',series=False,custom=None):
         records = ["('" + str(x[0]) + "')" for x in df.values]
     
     # Define insert string
-    insert = "INSERT INTO {} {} VALUES ".format(name,col_string_insert)
+    if temp == True:
+        insert = "INSERT INTO #{} {} VALUES ".format(name,col_string_insert)
+    else:
+        insert = "INSERT INTO {} {} VALUES ".format(name,col_string_insert)
      
     # Define the function that will insert rows
     def batch_run():
@@ -118,7 +118,11 @@ def to_sql_fast(df,name,engine,if_exists='append',series=False,custom=None):
     
     # Check if table exists
     try:
-        engine.execute(("CREATE TABLE {}"
+        if temp == True:
+            engine.execute(("CREATE TABLE #{}"
+                        " {};").format(name, col_string_create))
+        else:
+            engine.execute(("CREATE TABLE {}"
                         " {};").format(name, col_string_create))
         exists = False
     except exc.SQLAlchemyError as e:
