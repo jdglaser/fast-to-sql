@@ -9,7 +9,7 @@ The funciton also automatically preserves datatypes for: integer, float, string,
 ## Installation
 
 ```python
-pip install fast_to_SQL
+pip install fast_to_sql
 ```
 
 ## Requirements
