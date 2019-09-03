@@ -22,6 +22,9 @@ def to_sql_fast(df,name,engine,if_exists='append',series=False,custom=None,temp=
         custom = {}
     # Copy DF to avoid changing instance elsewhere
     df = df.copy()
+    # Create as DF if series
+    if series == True:
+        df = df.to_frame()
     # Replace all commas in dataframe to avoid SQl error
     object_cols = list(df.select_dtypes(include='object').columns)
     df[object_cols] = df[object_cols].apply(lambda x: x.astype(str).str.replace('"',""))
@@ -38,9 +41,6 @@ def to_sql_fast(df,name,engine,if_exists='append',series=False,custom=None,temp=
 
     if check:
         raise DuplicateColumns("There are duplicate column names. Columns named twice are: {}. SQL must have unique names (case insensitive)".format(check))
-
-    if series == True:
-        df = df.to_frame()
     
     cols = df.columns.tolist()
     
@@ -125,7 +125,7 @@ def to_sql_fast(df,name,engine,if_exists='append',series=False,custom=None,temp=
             engine.execute(("CREATE TABLE {}"
                         " {};").format(name, col_string_create))
         exists = False
-    except exc.SQLAlchemyError as e:
+    except Exception as e:
         if "there is already an object named" in str(e).lower():
             exists = True
         else:
