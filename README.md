@@ -20,7 +20,7 @@ pip install fast_to_sql
 ## Example
 
 ```python
-from fast_to_SQL import fast_to_sql as fts
+from fast_to_SQL import fast_to_SQL as fts
 
 # Create a SQL Alchemy Engine to desired server/database
 sqluser = "DOMAIN\USER"
