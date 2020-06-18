@@ -54,7 +54,10 @@ def _get_data_types(df, custom):
             data_types[c] = custom[c]
             continue
         dtype = str(df[c].dtype)
-        data_types[c] = DTYPE_MAP[dtype]
+        if dtype not in DTYPE_MAP:
+            data_types[c] = "varchar(255)"
+        else:
+            data_types[c] = DTYPE_MAP[dtype]
     return data_types
 
 def _get_schema(table_name):
