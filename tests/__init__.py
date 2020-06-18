@@ -1,0 +1,1 @@
+from fast_to_sql import fast_to_sql

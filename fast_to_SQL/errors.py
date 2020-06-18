@@ -1,0 +1,8 @@
+class FailError(Exception):
+    pass
+class WrongParam(Exception):
+    pass
+class DuplicateColumns(Exception):
+    pass
+class CustomColumnException(Exception):
+    pass

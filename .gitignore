@@ -1,0 +1,10 @@
+setup.*
+
+/build/
+/dist/
+*.egg-info
+
+*.lock
+.vscode
+__pycache__
+pipfile

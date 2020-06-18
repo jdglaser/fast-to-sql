@@ -2,9 +2,9 @@
 
 ## Introduction
 
-fast_to_SQL is an improved way to upload pandas dataframes to MS SQL server. The method borrows an idea from [here](https://iabdb.me/2016/07/13/a-better-way-load-data-into-microsoft-sql-server-from-pandas/), and turns it into a usable function. This function takes advantage of MS SQL server's multi-row insert ability. This can lead to MUCH faster speeds for uploading dataframes to SQL server (uploading a 10,000 row 5 column dataframe with pd.to_sql() took 517.97s, while uploading the same dataframe with fast_to_SQL took only 5.45s!). 
+`fast_to_sql` is an improved way to upload pandas dataframes to Microsoft SQL Server.
 
-The funciton also automatically preserves datatypes for: integer, float, string, boolean, and datetime64[ns] and converts them to SQL datatypes: int, float, varchar(255), bit, and datetime. Custom data types can also be set for a subset or all of the columns (see [usage](#usage)).
+`fast_to_sql` takes advantage of pyodbc rather than SQLAlchemy. This allows for a much lighter weight import for writing pandas dataframes to sql server. It uses pyodbc's `executemany` method with `fast_executemany` set to `True`, resulting in far superior run times when inserting data. 
 
 ## Installation
 
@@ -14,27 +14,44 @@ pip install fast_to_sql
 
 ## Requirements
 
-* Written for Python 3.6+
-* Requires pandas, sqlalchemy, datetime
+* Written for Python 3.8+
+* Requires pandas, pyodbc
 
 ## Example
 
-```python
-from fast_to_SQL import fast_to_sql as fts
+```py
+from datetime import datetime
 
-# Create a SQL Alchemy Engine to desired server/database
-sqluser = "DOMAIN\USER"
-sqlpass = "Password"
-server = "some_server"
-db = "some_DB"
+import pandas as pd
 
-engine = create_engine("mssql+pyodbc://{}:{}@{}/{}?driver=SQL+Server&trusted_connection=true"
-                       .format(sqluser,sqlpass,server,db))
+import pyodbc
+from fast_to_sql import fast_to_sql as fts
 
-df = SomePandasDF
+# Test Dataframe for insertion
+df = pd.DataFrame({
+    "Col1": [1, 2, 3],
+    "Col2": ["A", "B", "C"],
+    "Col3": [True, False, True],
+    "Col4": [datetime(2020,1,1),datetime(2020,1,2),datetime(2020,1,3)]
+})
 
-# Run main function
-fts.to_sql_fast(df, 'DFName', engine, if_exists = 'append', series = False, custom = {'column1':varchar(500)}, temp = False)
+# Create a pyodbc connection
+conn = pyodbc.connect(
+    """
+    Driver={ODBC Driver 17 for SQL Server};
+    Server=localhost;
+    Database=my_database;
+    UID=my_user;
+    PWD=my_pass;
+    """
+)
+
+# If a table is created, the generated sql is returned
+create_statement = fts.fast_to_sql(df, "testtable5", conn, if_exists="replace", custom={"Col1":"INT PRIMARY KEY"}, temp=False)
+
+# Commit upload actions and close connection
+conn.commit()
+conn.close()
 ```
 
 ## Usage
@@ -42,29 +59,25 @@ fts.to_sql_fast(df, 'DFName', engine, if_exists = 'append', series = False, cust
 ### Main function
 
 ```python
-fts.to_sql_fast(df, name, engine, if_exists = 'append', series = False, custom = None, temp = False)
+fts.fast_to_sql(df, name, conn, if_exists="append", custom=None, temp=False)
 ```
 
 * ```df```: pandas DataFrame to upload
 * ```name```: String of desired name for the table in SQL server
-* ```engine```: A SQL alchemy engine
-* ```if_exists```: Option for what to do if the specified name already exists in the dataframe. If the dataframe does not exist a new one will be created. By default this option is set to 'append'
+* ```conn```: A valid pyodbc connection object
+* ```if_exists```: Option for what to do if the specified table name already exists in the database. If the table does not exist a new one will be created. By default this option is set to 'append'
   * __'append'__: Appends the dataframe to the table if it already exists in SQL server.
-  * __'fail'__: Purposely raises a FailError if the table already exists in SQL server.
-  * __'replace'__: Drops the old table with the specified name, and creates a new one. Be careful with this option, it will completely delete a table with the specified name in SQL server.
-* ```series```: By default this is set to False. Set to True if the DataFrame is a series (only has one column).
-* ```custom```: A dictionary object with one or more of the column names being uploaded as the key, and a valid SQL data type as the value, this will override the default data type assigned to the column by the function.
-  * Example: `{'ColumnName':'varchar(1000)'}`
-* ```temp```: Either `True` if creating a local temporary table, or `False` (default) if not. If set to `True` the temporary table will be dropped after the connection is closed
+  * __'fail'__: Purposely raises a `FailError` if the table already exists in SQL server.
+  * __'replace'__: Drops the old table with the specified name, and creates a new one. **Be careful with this option**, it will completely delete a table with the specified name in SQL server.
+* ```custom```: A dictionary object with one or more of the column names being uploaded as the key, and a valid SQL column definition as the value. The value must contain a type (`INT`, `FLOAT`, `VARCHAR(500)`, etc.), and can optionally also include constraints (`NOT NULL`, `PRIMARY KEY`, etc.)
+  * Examples: 
+  `{'ColumnName':'varchar(1000)'}` 
+  `{'ColumnName2':'int primary key'}`
+* ```temp```: Either `True` if creating a local sql server temporary table for the connection, or `False` (default) if not.
 
-## Caveats
 
-* This has only been tested with Microsoft SQL Server 2016 and `pyodbc` This may not work for other SQL databases.
-* The larger the database, the smaller speed imrpovements you will most likely see. This means that a 100 column, 500,000 row table, may still take a while to upload. This is because multi-row insert can only do a max of 1000 rows at a time.
 
-## Credits
 
-* This package is based on an excellent article from [here](https://iabdb.me/2016/07/13/a-better-way-load-data-into-microsoft-sql-server-from-pandas/)
 
 
 
