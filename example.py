@@ -18,8 +18,8 @@ conn = pyodbc.connect(
     """Driver={ODBC Driver 17 for SQL Server};
     Server=localhost;
     Database=test;
-    UID=sa;
-    PWD=1234567mypass;"""
+    UID=my_uid;
+    PWD=my_pass;"""
 )
 
 # If a table is created, the generated sql is returned
