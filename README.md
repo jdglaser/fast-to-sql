@@ -47,7 +47,7 @@ conn = pyodbc.connect(
 )
 
 # If a table is created, the generated sql is returned
-create_statement = fts.fast_to_sql(df, "testtable5", conn, if_exists="replace", custom={"Col1":"INT PRIMARY KEY"}, temp=False)
+create_statement = fts.fast_to_sql(df, "my_great_table", conn, if_exists="replace", custom={"Col1":"INT PRIMARY KEY"}, temp=False)
 
 # Commit upload actions and close connection
 conn.commit()
