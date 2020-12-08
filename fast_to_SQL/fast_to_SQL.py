@@ -1,3 +1,7 @@
+"""Main script that holds logic for fast_to_sql
+"""
+
+from __future__ import absolute_import
 import pandas as pd 
 import pyodbc
 from . import errors
