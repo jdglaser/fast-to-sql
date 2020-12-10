@@ -33,7 +33,7 @@ def main():
         packages=find_packages(),
         include_package_data=True,
         platforms=app.__platforms__,
-        install_requires=app.__requires__,
+        install_requires=['pandas', 'pyodbc'],
         extras_require=app.__extra_requires__,
     )
 
