@@ -6,6 +6,11 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
+# required packages for PyPI
+setuptools = "*"
+wheel = "*"
+twine = "*"
+
 pandas = "*"
 pyodbc = "*"
 
