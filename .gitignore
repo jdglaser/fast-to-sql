@@ -5,4 +5,3 @@
 *.lock
 .vscode
 __pycache__
-pipfile
