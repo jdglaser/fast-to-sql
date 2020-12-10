@@ -1,4 +1,5 @@
-from fast_to_sql import errors, fast_to_sql as fts
+import fast_to_sql.fast_to_sql as fts
+from fast_to_sql import errors
 import pandas as pd  
 import unittest
 import pyodbc
@@ -10,16 +11,11 @@ TEST_DF = pd.DataFrame({
     "This is invalid": [True, False, False]
 })
 
-conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};Server=localhost;Database=test;UID=sa;PWD=1234567mypass;")
+conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};Server=localhost\SQLEXPRESS;Database=test;Trusted_Connection=yes;")
 
 
 # Tests
 class FastToSQLTests(unittest.TestCase):
-
-    def test_clean_str_cols(self):
-        should_be = ["hello''s","My","name"]
-        df = fts._clean_str_cols(TEST_DF)
-        self.assertEqual(should_be, df.iloc[:,1].to_list())
 
     def test_clean_cols(self):
         clean_cols = [fts._clean_col_name(c) for c in list(TEST_DF.columns)]
@@ -83,6 +79,15 @@ class FastToSQLTests(unittest.TestCase):
         with open("tests/test_create.sql","r") as f:
             compare = f.read()
         self.assertEqual(compare, create_statement)
+
+    def test_big_numbers(self):
+        with open("tests/test_data.dat", "r") as f:
+            data = f.read()
+        data = data.split("\n")
+        data = {i.split("|")[0]: [i.split("|")[1]] for i in data}
+        data = pd.DataFrame(data)
+        fts.fast_to_sql(data, "test1", conn, if_exists="replace", temp=False)
+        conn.commit()
     
     def test_fast_to_sql(self):
         """Test main fast_to_sql function

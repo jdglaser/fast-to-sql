@@ -1,6 +1,3 @@
-from __future__ import absolute_import
-from .fast_to_sql import fast_to_sql
-
 __project__ = "fast-to-sql"
 __version__ = "develop"
 __keywords__ = ["pandas", "to_sql", "fast", "sql"]

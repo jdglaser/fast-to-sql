@@ -1,6 +1,5 @@
 """Main script that holds logic for fast_to_sql
 """
-
 from __future__ import absolute_import
 import pandas as pd 
 import pyodbc
@@ -15,13 +14,14 @@ DTYPE_MAP = {
     "bool": "bit"
 }
 
-
+'''
 def _clean_str_cols(df):
     """Replace bad characters in df for sql insert
     """
     object_cols = list(df.select_dtypes(include='object').columns)
     df[object_cols] = df[object_cols].apply(lambda x: x.astype(str).str.replace("'","''"))
     return df
+'''
 
 def _check_duplicate_cols(df):
     """Returns duplicate column names (case insensitive)
@@ -122,7 +122,6 @@ def fast_to_sql(df, name, conn, if_exists='append', custom=None, temp=False):
     # Clean columns
     columns = [_clean_col_name(c) for c in list(df.columns)]
     df.columns = columns
-    df = _clean_str_cols(df)
 
     # Check for duplicate column names 
     _check_duplicate_cols(df)
