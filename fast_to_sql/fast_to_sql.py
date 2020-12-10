@@ -2,6 +2,7 @@
 """
 from __future__ import absolute_import
 import pandas as pd 
+import numpy as np
 import pyodbc
 from . import errors
 
@@ -13,15 +14,6 @@ DTYPE_MAP = {
     "datetime64[ns]": "datetime",
     "bool": "bit"
 }
-
-'''
-def _clean_str_cols(df):
-    """Replace bad characters in df for sql insert
-    """
-    object_cols = list(df.select_dtypes(include='object').columns)
-    df[object_cols] = df[object_cols].apply(lambda x: x.astype(str).str.replace("'","''"))
-    return df
-'''
 
 def _check_duplicate_cols(df):
     """Returns duplicate column names (case insensitive)
@@ -64,14 +56,19 @@ def _get_data_types(df, custom):
             data_types[c] = DTYPE_MAP[dtype]
     return data_types
 
-def _get_schema(table_name):
+def _get_default_schema(cur: pyodbc.Cursor) -> str:
+    """Get the default schema of the caller
+    """
+    return str(cur.execute("select SCHEMA_NAME() as scm").fetchall()[0][0])
+
+def _get_schema(cur: pyodbc.Cursor, table_name: str):
     """Get schema and table name - returned as tuple
     """
     t_spl = table_name.split(".")
     if len(t_spl) > 1:
         return t_spl[0], ".".join(t_spl[1:])
     else:
-        return '', table_name
+        return _get_default_schema(cur), table_name
 
 def _clean_table_name(table_name):
     """Cleans the table name
@@ -132,7 +129,7 @@ def fast_to_sql(df, name, conn, if_exists='append', custom=None, temp=False):
 
     # Get schema
     cur = conn.cursor()
-    schema, name = _get_schema(name)
+    schema, name = _get_schema(cur, name)
     if schema == '':
         schema = cur.execute("SELECT SCHEMA_NAME()").fetchall()[0][0]
     exists = _check_exists(cur, schema, name, temp)
@@ -158,6 +155,7 @@ def fast_to_sql(df, name, conn, if_exists='append', custom=None, temp=False):
     else:
         insert_sql = f"insert into [{schema}].[{name}] values ({','.join(['?' for v in data_types])})"
     insert_cols = df.values.tolist()
+    insert_cols = [[None if type(cell) == float and np.isnan(cell) else cell for cell in row] for row in insert_cols]
     cur.fast_executemany = True
     cur.executemany(insert_sql, insert_cols)
     cur.close()

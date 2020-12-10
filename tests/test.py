@@ -49,15 +49,22 @@ class FastToSQLTests(unittest.TestCase):
         self.assertEqual("this isn''t valid",fts._clean_table_name(table_name))
     
     def test_get_schema(self):
+        cur = conn.cursor()
+
         name = "dbo.test"
-        schema, name = fts._get_schema(name)
+        schema, name = fts._get_schema(cur, name)
         self.assertEqual("dbo",schema)
         self.assertEqual("test",name)
+        
+        name = "test"
+        schema, name = fts._get_schema(cur, name)
+        self.assertEqual("dbo", schema)
+        self.assertEqual("test", name)
     
     def test_check_exists(self):
         name = "dbo.test"
-        schema, name = fts._get_schema(name)
         cur = conn.cursor()
+        schema, name = fts._get_schema(cur, name)
         cur.execute("IF EXISTS(SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'test' and TABLE_SCHEMA = SCHEMA_NAME()) DROP TABLE dbo.test")
         cur.execute("create table dbo.test (t varchar(1))")
         res = fts._check_exists(cur, schema, name, False)
@@ -81,13 +88,27 @@ class FastToSQLTests(unittest.TestCase):
         self.assertEqual(compare, create_statement)
 
     def test_big_numbers(self):
+        cur = conn.cursor()
         with open("tests/test_data.dat", "r") as f:
             data = f.read()
         data = data.split("\n")
         data = {i.split("|")[0]: [i.split("|")[1]] for i in data}
         data = pd.DataFrame(data)
-        fts.fast_to_sql(data, "test1", conn, if_exists="replace", temp=False)
+        fts.fast_to_sql(data, "testy1", conn, if_exists="replace", temp=False)
         conn.commit()
+
+        test_val = int(cur.execute("select M from testy1").fetchall()[0][0])
+        self.assertEqual(352415214754234,test_val)
+
+    def test_null_values(self):
+        cur = conn.cursor()
+        data = pd.read_csv("tests/test_data2.csv")
+        fts.fast_to_sql(data, "testy2", conn, if_exists="replace", temp=False)
+        conn.commit()
+
+        output = cur.execute("select * from testy2").fetchall()
+        self.assertIsNone(output[0][1])
+        self.assertIsNone(output[1][2])
     
     def test_fast_to_sql(self):
         """Test main fast_to_sql function
@@ -132,6 +153,12 @@ class FastToSQLTests(unittest.TestCase):
         with open("tests/test_create_2.sql","r") as f:
             compare = f.read()
         self.assertEqual(compare, output)
+
+    def tearDown(self):
+        tables = ["test_table1","test_table2","test_table3","test_table4","testy1","testy2"]
+        for t in tables:
+            conn.execute(f"DROP TABLE IF EXISTS {t}")
+        conn.commit()
 
 if __name__ == '__main__':
     unittest.main()
