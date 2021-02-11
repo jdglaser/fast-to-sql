@@ -10,9 +10,9 @@ verify_ssl = true
 setuptools = "*"
 wheel = "*"
 twine = "*"
-
 pandas = "*"
 pyodbc = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.8"

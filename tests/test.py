@@ -3,6 +3,7 @@ from fast_to_sql import errors
 import pandas as pd  
 import unittest
 import pyodbc
+import numpy as np
 
 # Tests
 class FastToSQLTests(unittest.TestCase):
@@ -18,7 +19,7 @@ class FastToSQLTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};Server=localhost\SQLEXPRESS;Database=test;Trusted_Connection=yes;")
+        cls.conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};Server=localhost:1433;Database=test;Trusted_Connection=yes;")
 
     def test_clean_cols(self):
         clean_cols = [fts._clean_col_name(c) for c in list(self.TEST_DF.columns)]
@@ -157,8 +158,24 @@ class FastToSQLTests(unittest.TestCase):
             compare = f.read()
         self.assertEqual(compare, output)
 
+    def test_copy(self):
+        df2 = pd.DataFrame({"A Minus":[1,2],"B Plus":[3,4]})
+        fts.fast_to_sql(df2, "test_table4", self.conn, "replace", copy=True)
+        self.assertEqual(df2.columns[0], "A Minus")
+        fts.fast_to_sql(df2, "test_table4", self.conn, "replace")
+        self.assertEqual(df2.columns[0], "[A_Minus]")
+
+    def test_nan(self):
+        df3 = pd.DataFrame({"A": [1, np.NaN], "B": [np.nan, 4.3]})
+        fts.fast_to_sql(df3, "test_table5", self.conn, "replace")
+        cur = self.conn.cursor()
+        res = cur.execute("SELECT * FROM test_table5").fetchall()
+        self.assertIsNone(res[0][1])
+        self.assertIsNone(res[1][0])
+
+    @classmethod
     def tearDown(self):
-        tables = ["test_table1","test_table2","test_table3","test_table4","testy1","testy2"]
+        tables = ["test_table1","test_table2","test_table3","test_table4","test_table5","testy1","testy2"]
         for t in tables:
             self.conn.execute(f"DROP TABLE IF EXISTS {t}")
         self.conn.commit()

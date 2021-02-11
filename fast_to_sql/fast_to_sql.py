@@ -100,10 +100,12 @@ def _check_parameter_if_exists(if_exists):
     if if_exists not in ('append', 'fail', 'replace'):
         raise errors.WrongParam(f"Incorrect parameter value {if_exists} for 'if_exists'. Can be 'append', 'fail', or 'replace'")
         
-def fast_to_sql(df, name, conn, if_exists='append', custom=None, temp=False):
+def fast_to_sql(df, name, conn, if_exists='append', custom=None, temp=False, copy=False):
     """Main fast_to_sql function.
     Writes pandas dataframe to sql using pyodbc fast_executemany
     """
+    if copy:
+        df = df.copy()
     
     # Assign null custom
     if custom is None:
