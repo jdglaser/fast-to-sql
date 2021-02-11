@@ -13,7 +13,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: Start db 
         run: |
-          docker-compose up -d 
+          docker-compose up --build -d 
+      - name: Test db
+        run: |
+          while ! ping -c1 localhost:1433 &>/dev/null; do sleep 5; done
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -33,5 +36,4 @@ jobs:
           pipenv install
       - name: Run tests
         run: |
-          pipenv shell
-          python -m unittest tests/test.py
+          pipenv run python -m unittest tests/test.py
