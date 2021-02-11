@@ -16,7 +16,7 @@ jobs:
           docker-compose up -d 
       - name: Check db 
         run: |
-          docker run --network container:db appropriate/curl -s --retry 10 --retry-connrefused http://localhost:1433/
+          docker run --network container:test-db appropriate/curl -s --retry 10 --retry-connrefused http://localhost:1433/
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
