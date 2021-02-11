@@ -8,17 +8,12 @@ on: push
 jobs:
   test:
     runs-on: ubuntu-latest
-    container: node:10.18-jessie
-
-    services:
-      db:
-        build:
-          context: .
-        ports:
-          - 1433:1433
 
     steps:
       - uses: actions/checkout@v2
+      - name: Start db 
+        run: |
+          docker-compose up
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
