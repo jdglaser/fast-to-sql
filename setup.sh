@@ -6,8 +6,6 @@ do
         echo "setup.sql completed"
         break
     else
-        echo "HELLOOOO!!!"
-        echo "$SA_PASSWORD"
         echo "not ready yet..."
         sleep 1
     fi

@@ -19,7 +19,7 @@ class FastToSQLTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};Server=localhost:1433;Database=test;Trusted_Connection=yes;")
+        cls.conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};Server=localhost;Database=test;UID=sa;PWD=Pass@word;")
 
     def test_clean_cols(self):
         clean_cols = [fts._clean_col_name(c) for c in list(self.TEST_DF.columns)]
