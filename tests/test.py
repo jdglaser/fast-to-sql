@@ -173,6 +173,10 @@ class FastToSQLTests(unittest.TestCase):
         self.assertIsNone(res[0][1])
         self.assertIsNone(res[1][0])
 
+    def test_fail(self):
+        boolie = True
+        self.assertFalse(boolie)
+
     @classmethod
     def tearDown(self):
         tables = ["test_table1","test_table2","test_table3","test_table4","test_table5","testy1","testy2"]
