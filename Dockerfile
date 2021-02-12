@@ -5,9 +5,9 @@ USER root
 ENV SA_PASSWORD=Pass@word
 ENV ACCEPT_EULA=Y
 
-COPY setup.sql setup.sql
-COPY setup.sh setup.sh
-COPY entrypoint.sh entrypoint.sh
+COPY ./scripts/setup.sql setup.sql
+COPY ./scripts/setup.sh setup.sh
+COPY ./scripts/entrypoint.sh entrypoint.sh
 
 RUN chmod +x setup.sh
 RUN chmod +x entrypoint.sh

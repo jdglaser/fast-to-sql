@@ -1,4 +1,6 @@
-for i in {1..2};
+#!/bin/bash
+
+for i in {1..50};
 do
     /opt/mssql-tools/bin/sqlcmd -S db -U sa -P Pass@word -i setup.sql
     if [ $? -eq 0 ]

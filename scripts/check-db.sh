@@ -8,7 +8,7 @@ docker exec test-db /opt/mssql-tools/bin/sqlcmd -S db -U sa -P Pass@word -q "SEL
             echo "SQL Server ready"
             exit 0
         else
-            echo "Not ready yet..."
+            echo "Not ready yet...trying again in 2s"
             sleep 2;
     fi
 done
