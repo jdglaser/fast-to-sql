@@ -11,6 +11,5 @@ COPY entrypoint.sh entrypoint.sh
 
 RUN chmod +x setup.sh
 RUN chmod +x entrypoint.sh
-RUN sleep 15
 
 CMD /bin/bash ./entrypoint.sh
