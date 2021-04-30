@@ -1,5 +1,6 @@
 import fast_to_sql.fast_to_sql as fts
 from fast_to_sql import errors
+import datetime
 import pandas as pd  
 import unittest
 import pyodbc
@@ -20,6 +21,13 @@ class FastToSQLTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};Server=localhost;Database=test;UID=sa;PWD=Pass@word;")
+
+    @classmethod
+    def tearDown(self):
+        tables = ["test_table1","test_table2","test_table3","test_table4","test_table5","testy1","testy2"]
+        for t in tables:
+            self.conn.execute(f"DROP TABLE IF EXISTS {t}")
+        self.conn.commit()
 
     def test_clean_cols(self):
         clean_cols = [fts._clean_col_name(c) for c in list(self.TEST_DF.columns)]
@@ -173,12 +181,14 @@ class FastToSQLTests(unittest.TestCase):
         self.assertIsNone(res[0][1])
         self.assertIsNone(res[1][0])
 
-    @classmethod
-    def tearDown(self):
-        tables = ["test_table1","test_table2","test_table3","test_table4","test_table5","testy1","testy2"]
-        for t in tables:
-            self.conn.execute(f"DROP TABLE IF EXISTS {t}")
-        self.conn.commit()
+    def test_null_datetime(self):
+        df = pd.DataFrame({
+            "A": [1,2,3], 
+            "B": [pd.Timestamp("20200101"), pd.Timestamp("20200202"), None]})
+        fts.fast_to_sql(df, "test_table5", self.conn, "replace")
+        cur = self.conn.cursor()
+        res = cur.execute("SELECT * FROM test_table5").fetchall()
+        self.assertEqual(datetime.datetime(1,1,1,0,0), res[2][1])
 
 if __name__ == '__main__':
     unittest.main()
