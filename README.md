@@ -59,7 +59,7 @@ conn.close()
 ### Main function
 
 ```python
-fts.fast_to_sql(df, name, conn, if_exists="append", custom=None, temp=False)
+fts.fast_to_sql(df, name, conn, if_exists="append", custom=None, temp=False, copy=False)
 ```
 
 * ```df```: pandas DataFrame to upload
@@ -74,6 +74,7 @@ fts.fast_to_sql(df, name, conn, if_exists="append", custom=None, temp=False)
   `{'ColumnName':'varchar(1000)'}` 
   `{'ColumnName2':'int primary key'}`
 * ```temp```: Either `True` if creating a local sql server temporary table for the connection, or `False` (default) if not.
+* ```copy```: Defaults to `False`. If set to `True`, a copy of the dataframe will be made so column names of the original dataframe are not altered. Use this if you plan to continue to use the dataframe in your script after running `fast_to_sql`.
 
 
 
