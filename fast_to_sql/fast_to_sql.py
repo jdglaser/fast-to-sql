@@ -11,7 +11,7 @@ DTYPE_MAP = {
     "int64": "int",
     "float64": "float",
     "object": "varchar(255)",
-    "datetime64[ns]": "datetime",
+    "datetime64[ns]": "datetime2",
     "bool": "bit"
 }
 

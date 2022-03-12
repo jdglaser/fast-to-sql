@@ -2,6 +2,8 @@
 /dist/
 *.egg-info
 
+*playground*
+
 *.lock
 .vscode
 __pycache__
