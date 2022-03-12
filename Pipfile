@@ -5,6 +5,8 @@ verify_ssl = true
 
 [dev-packages]
 pylint = "*"
+autopep8 = "*"
+mypy = "*"
 
 [packages]
 # required packages for PyPI

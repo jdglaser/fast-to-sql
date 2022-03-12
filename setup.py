@@ -1,18 +1,21 @@
 """Setup script for fast_to_sql
 """
 
+import os
 # Always prefer setuptools over distutils
 import sys
-from setuptools import setup, find_packages
-import os
+
+from setuptools import find_packages, setup
+
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+
 def main():
     """Executes setup when this script is at the top-level
     """
-    import fast_to_sql as app 
+    import fast_to_sql as app
 
     setup(
         name=app.__project__,
@@ -36,6 +39,7 @@ def main():
         install_requires=app.__requires__,
         extras_require=app.__extra_requires__,
     )
+
 
 if __name__ == '__main__':
     main()

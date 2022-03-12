@@ -6,6 +6,7 @@ __author_email__ = "jarred.glaser@gmail.com"
 __url__ = "https://github.com/jdglaser/fast-to-sql"
 __platforms__ = "ALL"
 __requires__=['pandas', 'pyodbc']
+__doc__="An improved way to upload pandas dataframes to Microsoft SQL Server."
 
 __classifiers__ = [
     'Development Status :: 5 - Production/Stable',
