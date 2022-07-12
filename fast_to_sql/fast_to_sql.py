@@ -8,9 +8,12 @@ from . import errors
 
 # Global
 DTYPE_MAP = {
-    "int64": "int",
+    "int64": "bigint",
+    "int32": "int",
+    "int16": "smallint",
+    "int8": "tinyint",
     "float64": "float",
-    "object": "varchar(255)",
+    "object": "nvarchar(255)",
     "datetime64[ns]": "datetime2",
     "bool": "bit"
 }
