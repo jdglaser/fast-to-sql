@@ -21,8 +21,8 @@ def _check_duplicate_cols(df):
     cols = [c.lower() for c in df.columns]
     dups = [x for x in cols if cols.count(x) > 1]
     if dups:
-        raise errors.DuplicateColumns(f"There are duplicate column names. Repeated names are: {dups}.",
-                                      "SQL Server dialect requires unique names (case insensitive).")
+        raise errors.DuplicateColumns((f"There are duplicate column names. Repeated names are: {dups}."
+                                      "SQL Server dialect requires unique names (case insensitive)."))
 
 def _clean_col_name(column):
     """Removes special characters from column names
