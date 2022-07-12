@@ -21,8 +21,7 @@ def _check_duplicate_cols(df):
     cols = [c.lower() for c in df.columns]
     dups = [x for x in cols if cols.count(x) > 1]
     if dups:
-        raise errors.DuplicateColumns((f"There are duplicate column names. Repeated names are: {dups}."
-                                      "SQL Server dialect requires unique names (case insensitive)."))
+        raise errors.DuplicateColumns(f"There are duplicate column names. Repeated names are: {dups}. SQL Server dialect requires unique names (case insensitive).")
 
 def _clean_col_name(column):
     """Removes special characters from column names
@@ -152,10 +151,7 @@ def fast_to_sql(df, name, conn, if_exists='append', custom=None, temp=False, cop
             create_statement = _generate_create_statement(schema, name, data_types, temp)
             cur.execute(create_statement)
         elif if_exists == "fail":
-            if temp:
-                fail_msg = f"Temp table [{name}] already exists in this connection"
-            else:
-                fail_msg = f"Table [{schema}].[{name}] already exists" 
+            fail_msg = f"Temp table [{name}] already exists in this connection" if temp else f"Table [{schema}].[{name}] already exists" 
             raise errors.FailError(fail_msg)
     else:
         create_statement = _generate_create_statement(schema, name, data_types, temp)
