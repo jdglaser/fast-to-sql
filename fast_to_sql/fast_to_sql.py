@@ -76,7 +76,7 @@ def _get_schema(cur: pyodbc.Cursor, table_name: str):
 def _clean_table_name(table_name, temp):
     """Cleans the table name
     """
-    if temp == True and table_name.find('#') == True:
+    if temp == True and table_name.find('#') != 0:
         return '#'+table_name.replace("'","''")
     else:
         return table_name.replace("'","''")
