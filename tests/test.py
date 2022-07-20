@@ -54,11 +54,11 @@ class FastToSQLTests(unittest.TestCase):
         TEST_DF_c.columns = columns
         custom = fts._clean_custom(TEST_DF_c, {"[(Add)]":"INT PRIMARY KEY"})
         data_types = fts._get_data_types(TEST_DF_c, custom)
-        self.assertEqual({"[T1;']": 'int', '[Add]': 'INT PRIMARY KEY', '[This_is_invalid]': 'bit'},data_types)
+        self.assertEqual({"[T1;']": 'bigint', '[Add]': 'INT PRIMARY KEY', '[This_is_invalid]': 'bit'},data_types)
 
     def test_clean_name(self):
         table_name = "this isn't valid"
-        self.assertEqual("this isn''t valid",fts._clean_table_name(table_name))
+        self.assertEqual("this isn''t valid", fts._clean_table_name(table_name))
     
     def test_get_schema(self):
         cur = self.conn.cursor()

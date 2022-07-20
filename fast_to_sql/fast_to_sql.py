@@ -73,7 +73,7 @@ def _get_schema(cur: pyodbc.Cursor, table_name: str):
     else:
         return _get_default_schema(cur), table_name
 
-def _clean_table_name(table_name, temp):
+def _clean_table_name(table_name, temp=False):
     """Cleans the table name
     """
     if temp == True and table_name.find('#') != 0:
@@ -170,4 +170,4 @@ def fast_to_sql(df, name, conn, if_exists='append', custom=None, temp=False, cop
     cur.fast_executemany = True
     cur.executemany(insert_sql, insert_cols)
     cur.close()
-    return
+    return create_statement 
