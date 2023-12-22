@@ -79,7 +79,7 @@ def _get_schema(cur: pyodbc.Cursor, table_name: str):
         return _get_default_schema(cur), table_name
 
 
-def _clean_table_name(table_name, temp):
+def _clean_table_name(table_name, temp=False):
     """Cleans the table name"""
     if temp == True and table_name.find("#") != 0:
         return "#" + table_name.replace("'", "''")
@@ -176,7 +176,7 @@ def fast_to_sql(df, name, conn, if_exists="append", custom=None, temp=False, cop
     else:
         insert_sql = f"insert into [{schema}].[{name}] values ({','.join(['?' for v in data_types])})"
     insert_cols = df.values.tolist()
-    insert_cols = [[None if type(cell) == float and np.isnan(cell) else cell for cell in row] for row in insert_cols]
+    insert_cols = [[None if pd.isna(cell) else cell for cell in row] for row in insert_cols]
     cur.fast_executemany = True
     cur.executemany(insert_sql, insert_cols)
     cur.close()
