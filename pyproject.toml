@@ -1,0 +1,17 @@
+# mypy - type checking
+[tool.pyright]
+typeCheckingMode = "strict"
+
+[[tool.mypy.overrides]]
+module = ["setuptools"]
+ignore_missing_imports = true
+
+# black - auto formatting
+[tool.black]
+line-length = 120
+
+# flake8 - linting
+[tool.flake8]
+max-line-length = 120
+extend-ignore = "E203" # https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#flake8
+
