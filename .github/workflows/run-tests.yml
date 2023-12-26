@@ -17,7 +17,7 @@ jobs:
         run: |
           docker-compose up --build -d 
       - name: Wait for db startup
-        uses: jakejarvis/wait-action@master
+        uses: jakejarvis/wait-action@v0.1.1
         with:
           time: '15s'
       - name: Set up Python
