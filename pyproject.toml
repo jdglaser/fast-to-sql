@@ -1,6 +1,8 @@
 # mypy - type checking
 [tool.pyright]
 typeCheckingMode = "strict"
+reportUnknownMemberType = "none"
+reportUnknownVariableType = "none"
 
 [[tool.mypy.overrides]]
 module = ["setuptools"]

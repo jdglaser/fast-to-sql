@@ -3,9 +3,6 @@ services:
   mssql:
     image: mcr.microsoft.com/azure-sql-edge:latest
     container_name: mssql
-    volumes:
-      - events_mssql:/var/opt/mssql
-      - ./setup-local.sql:/usr/config/setup.sql
     ports:
       - 1433:1433
     environment:
@@ -13,8 +10,6 @@ services:
       - MSSQL_SA_PASSWORD=Passw@rd
       - MSSQL_PID=Developer
       - MSSQL_DB=events_service
-      - MSSQL_USER=SA
-      - MSSQL_PASSWORD=Passw@rd
       - MSSQL_DB_AUDIT_LOG=events_service_audit_log
 
 volumes:

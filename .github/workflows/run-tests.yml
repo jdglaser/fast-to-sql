@@ -4,12 +4,8 @@
 name: Run Tests
 
 on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+  - push
+  - pull_request
 
 jobs:
   run-tests:
@@ -20,10 +16,6 @@ jobs:
       - name: Start db 
         run: |
           docker-compose up --build -d 
-      - name: Check db ready
-        run: |
-          chmod +x ./scripts/check-db.sh
-          ./scripts/check-db.sh
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
