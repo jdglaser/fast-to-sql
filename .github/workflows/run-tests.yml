@@ -9,29 +9,33 @@ on:
 
 jobs:
   run-tests:
-    runs-on: ubuntu-latest
+    runs-on: windows-2022
 
     steps:
       - uses: actions/checkout@v2
       - name: Start db 
         run: |
           docker-compose up --build -d 
+      - name: Wait for db startup
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '15s'
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: "3.8"
-      - name: Install SQL ODBC Driver
-        run: |
-          sudo apt install unixodbc
-          sudo apt-get install unixodbc-dev
-          curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-          echo "deb [arch=amd64] https://packages.microsoft.com/ubuntu/18.04/prod bionic main" | sudo tee /etc/apt/sources.list.d/mssql-release.list
-          sudo apt update
-          sudo ACCEPT_EULA=Y apt install msodbcsql17
+      # - name: Install SQL ODBC Driver
+      #   run: |
+      #     sudo apt install unixodbc
+      #     sudo apt-get install unixodbc-dev
+      #     curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+      #     echo "deb [arch=amd64] https://packages.microsoft.com/ubuntu/18.04/prod bionic main" | sudo tee /etc/apt/sources.list.d/mssql-release.list
+      #     sudo apt update
+      #     sudo ACCEPT_EULA=Y apt install msodbcsql17
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Run tests
         run: |
-          python -m pytest tests
+          python -m pytest tests --junitxml=tests.xml
