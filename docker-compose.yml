@@ -1,8 +1,9 @@
-version: "3.9"
+# Database instance
 services:
-  db:
-    container_name: test-db
-    build:
-        context: .
+  mssql:
+    image: mcr.microsoft.com/azure-sql-edge:latest
     ports:
       - 1433:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Passw@rd
