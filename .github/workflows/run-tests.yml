@@ -54,7 +54,7 @@ jobs:
           pip install -r requirements.txt
       - name: Lint
         run: |
-          python -m flake8 fast-to-sql
+          python -m flake8 fast_to_sql
   type-check:
     runs-on: ubuntu-latest
 
@@ -70,5 +70,5 @@ jobs:
           pip install -r requirements.txt
       - name: Lint
         run: |
-          python -m pyright fast-to-sql
+          python -m pyright fast_to_sql
           
