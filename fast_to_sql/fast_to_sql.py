@@ -23,14 +23,13 @@ DTYPE_MAP = {
 }
 
 
-def check_duplicate_cols(df: DataFrame):
+def check_duplicate_cols(df):
     """Returns duplicate column names (case insensitive)"""
     cols = [c.lower() for c in df.columns]
     dups = [x for x in cols if cols.count(x) > 1]
     if dups:
         raise DuplicateColumns(
-            f"There are duplicate column names. Repeated names are: {dups}. SQL Server dialect requires unique names "
-            f"(case insensitive)."
+            f"There are duplicate column names. Repeated names are: {dups}. SQL Server dialect requires unique names (case insensitive)."
         )
 
 
