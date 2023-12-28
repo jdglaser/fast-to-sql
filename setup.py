@@ -15,7 +15,7 @@ def main():
 
     setup(
         name="fast-to-sql",
-        version=os.getenv("PYPI_PACKAGE_VERSION", "0.0.1dev"),
+        version=os.getenv("PYPI_PACKAGE_VERSION", "v0.0.1dev"),
         description="An improved way to upload pandas dataframes to Microsoft SQL Server.",
         long_description=read("README.md"),
         long_description_content_type="text/markdown",
