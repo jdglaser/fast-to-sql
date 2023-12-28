@@ -26,7 +26,7 @@ jobs:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
-          PYPI_PACKAGE_VERSION=${{ github.event.release.tag_name }}
+          export PYPI_PACKAGE_VERSION=${{ github.event.release.tag_name }}
           python -m setup sdist bdist_wheel
           python -m twine upload dist/*
   
