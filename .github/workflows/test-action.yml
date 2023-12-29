@@ -27,4 +27,4 @@ jobs:
           export GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
           echo "GIT HASH: ${GIT_HASH}"
           export TAG_NAME=${{ github.event.release.tag_name }}
-          echo "DEFAULT: ${TAG_NAME:-${LATEST_TAG}dev-${BRANCH}${GIT_HASH}}"
+          echo "DEFAULT: ${TAG_NAME:-${LATEST_TAG}dev${GIT_BRANCH}${GIT_HASH}}"
