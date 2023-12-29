@@ -16,3 +16,11 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
       - name: show tag name
         run: echo "TAG_NAME ${{ github.event.release.tag_name }}"
+      - name: get latest tag
+        run: |
+          export LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "LATEST TAG: ${LATEST_TAG}"
+          export GIT_BRANCH=${GITHUB_REF#refs/heads/}
+          echo "GIT BRANCH: ${GIT_BRANCH}"
+          export GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
+          echo "GIT HASH: ${GIT_HASH}"

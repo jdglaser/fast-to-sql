@@ -4,12 +4,18 @@
 name: Upload Python Package
 
 on:
-  release:
-    types: [published]
+  - push
+
+# on:
+#   release:
+#     types: [published]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
 
     steps:
       - uses: actions/checkout@v2
@@ -21,12 +27,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - name: Build and publish
-        env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      - name: Build
         run: |
           export PYPI_PACKAGE_VERSION=${{ github.event.release.tag_name }}
           python -m build
-          python -m twine upload dist/*
-  
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+      
