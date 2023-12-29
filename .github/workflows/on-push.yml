@@ -1,0 +1,14 @@
+name: On Push
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  test-and-lint:
+    uses: jdglaser/fast-to-sql/.github/workflows/test-and-lint.yml@master
+  deploy:
+    uses: jdglaser/fast-to-sql/.github/workflows/python-publish.yml@master
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+    needs:
+      - test-and-lint

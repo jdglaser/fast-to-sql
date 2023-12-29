@@ -4,8 +4,7 @@
 name: Test and Lint
 
 on:
-  - push
-  - pull_request
+  - workflow_call
 
 jobs:
   run-tests:
