@@ -38,7 +38,7 @@ jobs:
           echo "GIT BRANCH: ${GIT_BRANCH}"
           export GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
           echo "GIT HASH: ${GIT_HASH}"
-          export PYPI_PACKAGE_VERSION=${NEW_TAG:-${LATEST_TAG}dev${GIT_BRANCH}${GIT_HASH}}
+          export PYPI_PACKAGE_VERSION=${NEW_TAG:-${LATEST_TAG}+dev.${GIT_BRANCH}.${GIT_HASH}}
           echo "RESOLVED VERSION: ${PYPI_PACKAGE_VERSION}"
           python -m build
       - name: Publish package distributions to PyPI
