@@ -29,7 +29,8 @@ jobs:
           pip install -r requirements.txt
       - name: Build
         run: |
-          export PYPI_PACKAGE_VERSION=${{ github.event.release.tag_name }}
+          export TAG_NAME=${{ github.event.release.tag_name }}
+          export PYPI_PACKAGE_VERSION=${TAG_NAME:-v0.0.1dev}
           python -m build
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

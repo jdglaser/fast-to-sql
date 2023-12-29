@@ -19,6 +19,7 @@ jobs:
         run: echo "TAG_NAME ${{ github.event.release.tag_name }}"
       - name: get latest tag
         run: |
+          git fetch --tags
           export LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
           echo "LATEST TAG: ${LATEST_TAG}"
           export GIT_BRANCH=${GITHUB_REF#refs/heads/}
