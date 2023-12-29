@@ -1,5 +1,16 @@
-# name: On Release
+name: On Release
 
-# on:
-#   release:
-#     types: [published]
+on:
+  release:
+    types: [published]
+
+jobs:
+  test-and-lint:
+    name: Test and Lint
+    uses: jdglaser/fast-to-sql/.github/workflows/test-and-lint.yml@master
+  deploy:
+    name: Deploy
+    uses: jdglaser/fast-to-sql/.github/workflows/python-publish.yml@master
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+    needs:
+      - test-and-lint
