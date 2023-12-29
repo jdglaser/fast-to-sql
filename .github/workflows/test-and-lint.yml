@@ -8,6 +8,7 @@ on:
 
 jobs:
   run-tests:
+    name: Unit Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -39,6 +40,7 @@ jobs:
         run: |
           python -m pytest tests --junitxml=tests.xml
   lint:
+    name: Lint
     runs-on: ubuntu-latest
 
     steps:
@@ -55,6 +57,7 @@ jobs:
         run: |
           python -m flake8 fast_to_sql
   type-check:
+    name: Type Check
     runs-on: ubuntu-latest
 
     steps:
