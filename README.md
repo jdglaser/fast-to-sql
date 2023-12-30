@@ -32,7 +32,7 @@ from datetime import datetime
 import pandas as pd
 
 import pyodbc
-from fast_to_sql import fast_to_sql as fts
+from fast_to_sql import fast_to_sql
 
 # Test Dataframe for insertion
 df = pd.DataFrame({
@@ -54,7 +54,9 @@ conn = pyodbc.connect(
 )
 
 # If a table is created, the generated sql is returned
-create_statement = fts.fast_to_sql(df, "my_great_table", conn, if_exists="replace", custom={"Col1":"INT PRIMARY KEY"}, temp=False)
+create_statement = fast_to_sql(
+  df, "my_great_table", conn, if_exists="replace", custom={"Col1":"INT PRIMARY KEY"}
+)
 
 # Commit upload actions and close connection
 conn.commit()
@@ -66,7 +68,16 @@ conn.close()
 ### Main function
 
 ```python
-fts.fast_to_sql(df, name, conn, if_exists="append", custom=None, temp=False, copy=False)
+fast_to_sql(
+  df, 
+  name, 
+  conn, 
+  if_exists="append", 
+  custom=None, 
+  temp=False, 
+  copy=False,
+  clean_cols=True
+)
 ```
 
 * ```df```: pandas DataFrame to upload
@@ -82,6 +93,7 @@ fts.fast_to_sql(df, name, conn, if_exists="append", custom=None, temp=False, cop
   `{'ColumnName2':'int primary key'}`
 * ```temp```: Either `True` if creating a local sql server temporary table for the connection, or `False` (default) if not.
 * ```copy```: Defaults to `False`. If set to `True`, a copy of the dataframe will be made so column names of the original dataframe are not altered. Use this if you plan to continue to use the dataframe in your script after running `fast_to_sql`.
+* ```clean_cols```: Defaults to `True`. If set to `False`, column names will not be cleaned when creating the table to insert the DataFrame into. If this is set to `False`, it is up to the caller of the function to make sure the names of the columns in the DataFrame are compatible with SQL Server.
 
 
 
