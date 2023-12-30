@@ -4,12 +4,17 @@
 name: Test and Lint
 
 on:
-  - workflow_call
+  - push
+  - pull_request
 
 jobs:
   run-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@v2
@@ -23,7 +28,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.8"
+          python-version: ${{ matrix.version }}
       - name: Install SQL ODBC Driver
         run: |
           sudo apt install unixodbc
