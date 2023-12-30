@@ -1,5 +1,12 @@
 # fast_to_sql
 
+[![Test and lint](https://github.com/jdglaser/fast-to-sql/actions/workflows/test-and-lint.yml/badge.svg)](https://github.com/jdglaser/fast-to-sql/actions/workflows/test-and-lint.yml)
+![pypi](https://img.shields.io/pypi/v/fast-to-sql.svg)
+![Python version](https://img.shields.io/pypi/pyversions/fast-to-sql)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/fast-to-sql)
+![PyPI - License](https://img.shields.io/pypi/l/fast-to-sql)
+
+
 ## Introduction
 
 `fast_to_sql` is an improved way to upload pandas dataframes to Microsoft SQL Server.
