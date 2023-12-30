@@ -1,7 +1,7 @@
 pyodbc==5.0.1
 pandas==2.0.3
 pandas-stubs==2.0.3.230814
-numpy==1.24.4
+#numpy==1.24.4
 flake8==6.1.0
 Flake8-pyproject==1.2.3
 pytest==7.4.3
