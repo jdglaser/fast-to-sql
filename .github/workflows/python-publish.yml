@@ -11,6 +11,7 @@ jobs:
   publish-to-pypi:
     name: Publish to PyPi
     runs-on: ubuntu-latest
+    environment: release
     permissions:
       # IMPORTANT: this permission is mandatory for trusted publishing
       id-token: write
