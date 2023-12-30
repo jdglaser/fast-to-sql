@@ -8,8 +8,8 @@ import pytest
 from pandas import Series
 
 from fast_to_sql import fast_to_sql
-from fast_to_sql.errors import CustomColumnException, DuplicateColumns, FailError
-from fast_to_sql.fast_to_sql import (
+from fast_to_sql.errors import CustomColumnException, DuplicateColumnsException, FailError
+from fast_to_sql.utils.utility_funs import (
     check_duplicate_cols,
     check_exists,
     clean_col_name,
@@ -59,7 +59,7 @@ def test_dups():
     def should_fail():
         check_duplicate_cols(TEST_DF_NEW)
 
-    with pytest.raises(DuplicateColumns) as exc:
+    with pytest.raises(DuplicateColumnsException) as exc:
         should_fail()
 
     assert (
@@ -223,3 +223,12 @@ def test_null_datetime(conn: pyodbc.Connection):
     cur = conn.cursor()
     res = cur.execute("SELECT * FROM test_table5").fetchall()
     assert datetime.datetime(2020, 1, 1, 0, 0) == res[0][1]
+
+
+def test_no_clean_col_names(conn: pyodbc.Connection):
+    df = pd.DataFrame({"[My Special Col]": [1, 2, 3], "BCol": [4, 5, 6]})
+    sql = fast_to_sql(df, "test_table6", conn, "replace", clean_cols=False)
+    assert """create table [dbo].[test_table6]\n(\n\t[My Special Col] bigint,\n\tBCol bigint\n)""" == sql
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM test_table6")
+    assert ["My Special Col", "BCol"] == [column[0] for column in cur.description]

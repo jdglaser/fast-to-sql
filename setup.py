@@ -31,7 +31,7 @@ setup(
     url="https://github.com/jdglaser/fast-to-sql",
     license="License :: OSI Approved :: MIT License",
     keywords=["pandas", "to_sql", "fast", "sql"],
-    packages=find_packages("fast_to_sql"),
+    packages=find_packages(exclude=["tests"]),
     include_package_data=True,
     install_requires=["pandas", "pyodbc"],
 )

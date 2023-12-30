@@ -10,7 +10,7 @@ class InvalidParamError(Exception):
     pass
 
 
-class DuplicateColumns(Exception):
+class DuplicateColumnsException(Exception):
     pass
 
 
